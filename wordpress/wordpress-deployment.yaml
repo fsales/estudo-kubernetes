@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: wordpress-image
-          image: worpress:4.8-apache
+          image: wordpress:4.8-apache
           resources:
             limits:
               memory: "512Mi"
@@ -21,9 +21,9 @@ spec:
           ports:
             - containerPort: 8080
           env:
-            - name: WORPRESS_DB_HOST
-              value: mysql-deployment
-            - name: WORPRESS_DB_PASSWORD
+            - name: WORDPRESS_DB_HOST
+              value: mysql-service
+            - name: WORDPRESS_DB_PASSWORD
               #value: wordpress-2020
               valueFrom:
                 secretKeyRef:
@@ -33,4 +33,6 @@ spec:
             - mountPath: /var/www/html
               name: wordpress-volume
       volumes:
-        - name: worpress-pvc
+        - name: wordpress-volume
+          persistentVolumeClaim:
+            claimName: worpress-pvc
