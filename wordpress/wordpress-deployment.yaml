@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-deployment
+spec:
+  selector:
+    matchLabels:
+      app: wordpress-deployment
+  template:
+    metadata:
+      labels:
+        app: wordpress-deployment
+    spec:
+      containers:
+        - name: wordpress-image
+          image: worpress:4.8-apache
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: WORPRESS_DB_HOST
+              value: mysql-deployment
+            - name: WORPRESS_DB_PASSWORD
+              #value: wordpress-2020
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: password
+          volumeMounts:
+            - mountPath: /var/www/html
+              name: wordpress-volume
+      volumes:
+        - name: worpress-pvc
